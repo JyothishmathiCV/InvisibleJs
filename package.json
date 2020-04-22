@@ -1,0 +1,16 @@
+{
+  "name": "stegno",
+  "version": "1.0.0",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "lzma": "^2.3.2",
+    "lzutf8": "^0.5.5",
+    "node-gzip": "^1.1.2"
+  }
+}

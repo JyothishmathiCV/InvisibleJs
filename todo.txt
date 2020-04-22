@@ -1,0 +1,2 @@
+npm install buffer
+Look for a better compression algorithm
