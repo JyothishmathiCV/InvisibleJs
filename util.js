@@ -22,10 +22,7 @@ const aes_decrypt = (key, data) => {
     return concat_buff([decipher.update(buff(data), 'utf8'), decipher.final()]);
 }
 
-// Get the starting index of the cover message
-// const getSM = (str) => {
-// return str.split(' ')[1];
-// }
+
 
 const embed=(cover,secret)=>{
 let arr=cover.split(' ');

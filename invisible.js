@@ -46,15 +46,3 @@ var payload=inject(message,key,'This is a confidential text');
 
 console.log(payload);
 
-// mytext="c ‍‍‌‌​‍‎‌‎‌‌‍‍‍‌‌‌‎‎​‌‍​‍‎‍‌‍‍‍​‎‎‌‍‌‍​‎​‌‍‍‍‎‎‌‌‎‎‌​​‍​​‎‍‌‍​‍‌‌g"
-
-
-// console.log(payload.split(''),mytext.split(''))
-
-// console.log(payload.length,mytext.length);
-
-// console.log(mytext);
-
-// console.log(eject(payload,key));
-// console.log(eject(payload,key));
-
