@@ -1,2 +1,13 @@
-npm install buffer
 Look for a better compression algorithm
+    test https://www.npmjs.com/package/lzwcompress if this module works better than the current lzw
+    
+Pure functional program port
+
+  - Ramda 
+  
+Pure js module port
+
+  
+
+
+
