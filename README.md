@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://raw.githubusercontent.com/KuroLabs/Airshare/master/assets/Airshare.svg" alt="Airshare" width="100">
+  <img src="https://image.flaticon.com/icons/svg/1827/1827937.svg" alt="Airshare" width="100">
   <br>
   <br>
   <span>InvisibleJS</span>
