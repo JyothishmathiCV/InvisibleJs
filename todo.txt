@@ -5,7 +5,9 @@ Pure functional program port
 
   - Ramda 
   
-Pure js module port
+Pure js module port  - crypto to work in browser and everywhere - currently uses node's version
+
+(node:36354) [DEP0106] DeprecationWarning: crypto.createCipher is deprecated.
 
   
 

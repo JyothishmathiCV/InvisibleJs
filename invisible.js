@@ -11,7 +11,7 @@ const { not,
     byteToBin,
     binToByte,embed} = require('./util.js');
     
-var key = 'l' // Secret key for 256 bit AES is 32 characters
+var key = 'l' 
 var message = "Secret key for 256 bit AES is 32 characters"
 
 
