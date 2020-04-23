@@ -9,8 +9,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "buffer": "^5.6.0",
     "lzma": "^2.3.2",
     "lzutf8": "^0.5.5",
+    "lzwcompress": "^0.5.16",
     "node-gzip": "^1.1.2"
   }
 }

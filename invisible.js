@@ -1,29 +1,50 @@
-var invisible = require('./util.js');
-// var key = 'secret key 12345secret key 12345' // Secret key for 256 bit AES is 32 characters
-// var message = 'my message my message my message my message'
+const { not,
+    aes_encrypt,
+    aes_decrypt,
+    buff,
+    byarr,
+    compress,
+    decompress,
+    ZWCToData,
+    dataToZWC,
+    getSM,
+    byteToBin,
+    binToByte,embed} = require('./util.js');
+    
+var key = 'secret key 12345secret key 12345' // Secret key for 256 bit AES is 32 characters
+var message = 'my message my message my message my message'
 
 
 function inject(message, key, cover) {
 
-    let comB = invisible.compress(message);
+    let comB = compress(message);
 
-    let compliment = invisible.not(invisible.byarr(comB));
+    let compliment = not(byarr(comB));
 
-    let encryptB = invisible.aes_encrypt(key, compliment);
+    let encryptB = aes_encrypt(key, compliment);
 
-    let payload = invisible.dataToZWC(invisible.bytobin(invisible.byarr(encryptB)));
+    let payload = dataToZWC(byteToBin(byarr(encryptB)));
 
-    return payload + cover;
+    return embed(cover,payload);
 }
 
 
-function eject(str,key){
-    
-    let payload = invisible.binToByte(invisible.ZWCToData(str.slice(0,invisible.getIndexOfCM(str))));
+function eject(str,key){    
 
-    let decrypt = invisible.aes_decrypt(key,payload);
+    let payload = binToByte(ZWCToData(getSM(str)));
 
-    let compliment = invisible.not(invisible.byarr(decrypt));
+    let decrypt = aes_decrypt(key,payload);
 
-    return message = invisible.decompress(invisible.buff(compliment));
+    let compliment = not(byarr(decrypt));
+
+    return decompress(buff(compliment));
+
 }
+
+
+var payload=inject(message,key,"This is a confidential message");
+
+
+console.log(payload);
+
+console.log(eject(payload,key));
