@@ -23,16 +23,14 @@ const aes_decrypt = (key, data) => {
 }
 
 // Get the starting index of the cover message
-const getSM = (str) => {
-return str.split(' ')[1];
-}
+// const getSM = (str) => {
+// return str.split(' ')[1];
+// }
 
 const embed=(cover,secret)=>{
 let arr=cover.split(' ');
-return [arr[0]].concat([secret]).concat(['\b'+arr[1]]).concat(arr.slice(2,arr.length)).join(' ');
+return [arr[0]].concat([secret+arr[1]]).concat(arr.slice(2,arr.length)).join(' ');
 }
-
-
 
 
 // convert byte array to buffer
@@ -93,6 +91,18 @@ const dataToZWC = (str) => {
         ZWCstr += binToZWC(str[i] + str[i + 1])
     }
     return ZWCstr;
+}
+
+const getSM = (str) => {
+    var output;
+    str.split(' ')[1].split('').every((x,i)=>{
+        if(!(~zwc.indexOf(x))){
+            output=str.split(' ')[1].slice(0,i);
+            return false;
+        }
+        return true;
+    });
+    return output;
 }
 
 //ZWC string to data 

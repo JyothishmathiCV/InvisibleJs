@@ -11,8 +11,8 @@ const { not,
     byteToBin,
     binToByte,embed} = require('./util.js');
     
-var key = 'secret key 12345secret key 12345' // Secret key for 256 bit AES is 32 characters
-var message = 'my message my message my message my message'
+var key = 'l' // Secret key for 256 bit AES is 32 characters
+var message = "Secret key for 256 bit AES is 32 characters"
 
 
 function inject(message, key, cover) {
@@ -25,7 +25,7 @@ function inject(message, key, cover) {
 
     let payload = dataToZWC(byteToBin(byarr(encryptB)));
 
-    return embed(cover,payload);
+    return embed(cover,payload)
 }
 
 
@@ -42,9 +42,19 @@ function eject(str,key){
 }
 
 
-var payload=inject(message,key,"This is a confidential message");
-
+var payload=inject(message,key,'This is a confidential text');
 
 console.log(payload);
 
-console.log(eject(payload,key));
+// mytext="c ‍‍‌‌​‍‎‌‎‌‌‍‍‍‌‌‌‎‎​‌‍​‍‎‍‌‍‍‍​‎‎‌‍‌‍​‎​‌‍‍‍‎‎‌‌‎‎‌​​‍​​‎‍‌‍​‍‌‌g"
+
+
+// console.log(payload.split(''),mytext.split(''))
+
+// console.log(payload.length,mytext.length);
+
+// console.log(mytext);
+
+// console.log(eject(payload,key));
+// console.log(eject(payload,key));
+
