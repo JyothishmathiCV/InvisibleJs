@@ -1,6 +1,6 @@
 const { not,
-    aes_encrypt,
-    aes_decrypt,
+    encrypt,
+    decrypt,
     buff,
     byarr,
     compress,
@@ -11,40 +11,40 @@ const { not,
     byteToBin,
     binToByte,embed} = require('./util.js');
     
-var key = 'secret key 12345secret key 12345' // Secret key for 256 bit AES is 32 characters
-var message = 'my message my message my message my message'
+var key = 'pass!!!' // Secret key for 256 bit AES is 32 characters
+var message = "shhhh!"
 
 
-function inject(message, key, cover) {
+function inject(message, key, cover,integrity) {
 
     let comB = compress(message);
 
     let compliment = not(byarr(comB));
 
-    let encryptB = aes_encrypt(key, compliment);
+    let encryptB = encrypt({password:key,data:compliment,integrity});
 
     let payload = dataToZWC(byteToBin(byarr(encryptB)));
 
-    return embed(cover,payload);
+    return embed(cover,payload)
 }
 
 
-function eject(str,key){    
+function eject(str,key,integrity){    
 
     let payload = binToByte(ZWCToData(getSM(str)));
 
-    let decrypt = aes_decrypt(key,payload);
+    let decryptB = decrypt({password:key,data:payload,integrity});
 
-    let compliment = not(byarr(decrypt));
+    let compliment = not(byarr(decryptB));
 
     return decompress(buff(compliment));
 
 }
 
 
-var payload=inject(message,key,"This is a confidential message");
+var payload=inject(message,key,'This is a confidential text',true);
 
+console.log(payload.length);
 
-console.log(payload);
+console.log(eject(payload,key,true));
 
-console.log(eject(payload,key));

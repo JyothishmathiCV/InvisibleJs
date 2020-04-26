@@ -1,4 +1,4 @@
-var crypto = require('crypto');
+var crypto = require('crypto-browserify');
 var lzutf8 = require('lzutf8');
 var Buffer = require('buffer/').Buffer
 
@@ -7,32 +7,68 @@ const zwc = ['‌', '​', '‍', '‎'] //00-200C, 01-200B, 10-200D, 11-200E
 // One's compliment an array
 const not = x => x.map(y => ~y)
 
-// Aes encrypt an array
-const aes_encrypt = (key, data) => {
-    const cipher = crypto.createCipher('aes-256-ecb', buff(key));
-    return concat_buff([cipher.update(buff(data), 'utf8'), cipher.final()]);
+
+const echoReturn=x=>{console.log(x);return x}
+
+// Aes encrypt an array -- {password,text,integrity:bool} -- key gen, ctr, encrypted
+const encrypt = (obj) => {
+    const salt = getSalt(16);
+    const iv = getConstantIv();
+    const key = genKey(obj.password,salt.toString());
+    const cipher = crypto.createCipheriv('aes-256-ctr',buff(key),iv);
+    const encrypted = concat_buff([cipher.update(buff(obj.data),'utf8'),cipher.final()])
+    if(obj.integrity){
+        const hmac = crypto.createHmac('sha256',buff(key)).update(encrypted).digest('');
+        return echoReturn(concat_buff([salt,hmac,encrypted]));
+    }
+    return echoReturn(concat_buff([salt,encrypted]));
+}
+
+// Aes decrypt an array -- {}
+const decrypt = (obj) => {
+    const data = buff(obj.data);
+    const iv = getConstantIv();
+    const salt = data.slice(0,16);
+    let encrypted;
+    if(obj.integrity){
+        encrypted = data.slice(48);
+    }else{
+        encrypted = data.slice(16);
+    }
+    const key = genKey(obj.password,salt.toString());
+    
+    const decipher = crypto.createDecipheriv('aes-256-ctr', buff(key),iv);
+    const decrypted = concat_buff([decipher.update(buff(encrypted), 'utf8'), decipher.final()]);
+    if(obj.integrity){
+        const hmac_data = data.slice(16,48);
+        const v_hmac = crypto.createHmac('sha256',buff(key)).update(encrypted).digest();
+        console.log(hmac_data)
+        console.log(v_hmac);
+ console.log(Buffer.compare(hmac_data, v_hmac))
+        if(Buffer.compare(hmac_data, v_hmac)!==0){
+             return echoReturn('HMAC_assertion_failed');
+        }
+    }
+    return echoReturn(decrypted);
 }
 
 //Concatenate buffers
 const concat_buff = x => Buffer.concat(x);
 
-// Aes decrypt an array
-const aes_decrypt = (key, data) => {
-    const decipher = crypto.createDecipher('aes-256-ecb', buff(key));
-    return concat_buff([decipher.update(buff(data), 'utf8'), decipher.final()]);
-}
+//Generate random salt_iv
+const getSalt = x => crypto.randomBytes(x);
 
-// Get the starting index of the cover message
-const getSM = (str) => {
-return str.split(' ')[1];
-}
+const getConstantIv =()=>Buffer.alloc(16)
+
+//Key generation
+const genKey = (password, salt) => crypto.pbkdf2Sync(password,salt,3000,32,'sha512');
+
+
 
 const embed=(cover,secret)=>{
 let arr=cover.split(' ');
-return [arr[0]].concat([secret]).concat(['\b'+arr[1]]).concat(arr.slice(2,arr.length)).join(' ');
+return [arr[0]].concat([secret+arr[1]]).concat(arr.slice(2,arr.length)).join(' ');
 }
-
-
 
 
 // convert byte array to buffer
@@ -95,6 +131,18 @@ const dataToZWC = (str) => {
     return ZWCstr;
 }
 
+const getSM = (str) => {
+    var output;
+    str.split(' ')[1].split('').every((x,i)=>{
+        if(!(~zwc.indexOf(x))){
+            output=str.split(' ')[1].slice(0,i);
+            return false;
+        }
+        return true;
+    });
+    return output;
+}
+
 //ZWC string to data 
 const ZWCToData = (str) => {
 
@@ -103,8 +151,8 @@ const ZWCToData = (str) => {
 
 module.exports = {
     not,
-    aes_encrypt,
-    aes_decrypt,
+    encrypt,
+    decrypt,
     buff,
     byarr,
     compress,
@@ -113,6 +161,6 @@ module.exports = {
     dataToZWC,
     getSM,
     byteToBin,
-    embed,
+    embed, 
     binToByte
 }
