@@ -1,2 +1,15 @@
-npm install buffer
 Look for a better compression algorithm
+    test https://www.npmjs.com/package/lzwcompress if this module works better than the current lzw
+    
+Pure functional program port
+
+  - Ramda 
+  
+Pure js module port  - crypto to work in browser and everywhere - currently uses node's version
+
+(node:36354) [DEP0106] DeprecationWarning: crypto.createCipher is deprecated.
+
+  
+
+
+
