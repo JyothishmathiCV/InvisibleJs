@@ -13,12 +13,13 @@ const echoReturn=x=>{console.log(x);return x}
 // Aes encrypt an array -- {password,text,integrity:bool} -- key gen, ctr, encrypted
 const encrypt = (obj) => {
     const salt = getSalt(16);
-    const iv = getConstantIv();
-    const key = genKey(obj.password,salt.toString());
-    const cipher = crypto.createCipheriv('aes-256-ctr',buff(key),iv);
+    const iv_key =genKey(obj.password,salt.toString());
+    const iv = buff(byarr(iv_key).slice(0,16))
+    const key = buff(byarr(iv_key).slice(16))
+    const cipher = crypto.createCipheriv('aes-256-ctr',key,iv);
     const encrypted = concat_buff([cipher.update(buff(obj.data),'utf8'),cipher.final()])
     if(obj.integrity){
-        const hmac = crypto.createHmac('sha256',buff(key)).update(encrypted).digest('');
+        const hmac = crypto.createHmac('sha256',key).update(encrypted).digest('');
         return echoReturn(concat_buff([salt,hmac,encrypted]));
     }
     return echoReturn(concat_buff([salt,encrypted]));
@@ -27,7 +28,6 @@ const encrypt = (obj) => {
 // Aes decrypt an array -- {}
 const decrypt = (obj) => {
     const data = buff(obj.data);
-    const iv = getConstantIv();
     const salt = data.slice(0,16);
     let encrypted;
     if(obj.integrity){
@@ -35,16 +35,17 @@ const decrypt = (obj) => {
     }else{
         encrypted = data.slice(16);
     }
-    const key = genKey(obj.password,salt.toString());
-    
-    const decipher = crypto.createDecipheriv('aes-256-ctr', buff(key),iv);
-    const decrypted = concat_buff([decipher.update(buff(encrypted), 'utf8'), decipher.final()]);
+    const iv_key =genKey(obj.password,salt.toString());
+    const iv = buff(byarr(iv_key).slice(0,16))
+    const key = buff(byarr(iv_key).slice(16))
+    const decipher = crypto.createDecipheriv('aes-256-ctr', key,iv);
+    const decrypted = concat_buff([decipher.update(encrypted, 'utf8'), decipher.final()]);
     if(obj.integrity){
         const hmac_data = data.slice(16,48);
-        const v_hmac = crypto.createHmac('sha256',buff(key)).update(encrypted).digest();
+        const v_hmac = crypto.createHmac('sha256',key).update(encrypted).digest();
         console.log(hmac_data)
         console.log(v_hmac);
- console.log(Buffer.compare(hmac_data, v_hmac))
+        console.log(Buffer.compare(hmac_data, v_hmac))
         if(Buffer.compare(hmac_data, v_hmac)!==0){
              return echoReturn('HMAC_assertion_failed');
         }
@@ -61,7 +62,7 @@ const getSalt = x => crypto.randomBytes(x);
 const getConstantIv =()=>Buffer.alloc(16)
 
 //Key generation
-const genKey = (password, salt) => crypto.pbkdf2Sync(password,salt,3000,32,'sha512');
+const genKey = (password, salt) => crypto.pbkdf2Sync(password,salt,3000,48,'sha512');
 
 
 

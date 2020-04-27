@@ -44,7 +44,7 @@ function eject(str,key,integrity){
 
 var payload=inject(message,key,'This is a confidential text',true);
 
-console.log(payload.length);
+console.log("payload",payload.length);
 
 console.log(eject(payload,key,true));
 
