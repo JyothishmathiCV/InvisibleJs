@@ -1,12 +1,13 @@
 const Buffer = require('safe-buffer').Buffer;
 
-// One's compliment an array
+// Compliment an array
 const _not = x => x.map(y => ~y);
 
 
 //Slice a buffer
 const buff_slice = (x, y, z = x.length) => buff(byarr(x).slice(y, z));
 
+// Convert to byte array and apply complement
 const compliment = x=> _not(byarr(x));
 
 //Concatenate buffers
@@ -17,8 +18,6 @@ const buff = x => Buffer.from(x);
 
 // convert buffer to byte array
 const byarr = x => Uint8Array.from(x);
-
-
 
 // Number to Binary String conversion
 const nTobin = x => x.toString(2);
@@ -43,10 +42,6 @@ const zeroPad = (num, x) => {
     }
     return zero.slice(String(num).length) + num;
 }
-
-
-
-
 
 
 module.exports = {
