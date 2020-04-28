@@ -5,8 +5,6 @@ const {byteToBin,compliment,buff} = require('./util.js');
 var key = 'pass!!!' ;
 var message = "shhhh!";
 
-
-
 function inject(message, key, cover,integrity) {
 
     const secret=R.pipe(compress,compliment)(message);
@@ -18,25 +16,15 @@ function inject(message, key, cover,integrity) {
     return embed(cover,invisibleStream);
 }
 
-
-
 function eject(str,key){    
 
     const encryptStream=R.pipe(detach,concealToData)(str);
 
-
     let decryptStream = decrypt({password:key,data:encryptStream.data,integrity:encryptStream.integrity});
 
-
     return R.pipe(compliment,buff,decompress)(decryptStream);
-
 
 }
 
 
-var payload=inject(message,key,'This is a confidential text',true);
-
-console.log("payload",payload);
-
-console.log(eject(payload,key));
-
+module.exports = {eject,inject}
